@@ -121,9 +121,11 @@ addCarrierName2019DS := JOIN(addCityNames2019DS, $.helperFiles.CarriersCodeDs,
 //OUTPUT(SAMPLE(addCarrierName2019DS,5000),NAMED('locationAndCarrierNamesAdded2019'));
 //OUTPUT(SAMPLE(addCarrierName2020DS,5000),NAMED('locationAndCarrierNamesAdded2020'));
 
-/*RecordLayout reorganizes fields to move location and carrier data to beginning for easier checking, also removes code
+
+EXPORT airlineDataDiscovery := MODULE
+  /*RecordLayout reorganizes fields to move location and carrier data to beginning for easier checking, also removes code
 versions of country/city/carrier fields and only preserves names*/
-formattedAirlineDataRec := RECORD
+EXPORT formattedAirlineDataRec := RECORD
   STRING 			carrier;
 	STRING 			departCountryName;
 	STRING2     DepartStateProvCode; 
@@ -131,7 +133,6 @@ formattedAirlineDataRec := RECORD
 	STRING 			arrivalCountryName;
 	STRING2     ArriveStateProvCode;
 	STRING 			arrivalCity;
-	STRING 			carrierName;
 	INTEGER2 		FlightNumber;
 	STRING1   	CodeShareFlag;
 	STRING3 		CodeShareCarrier; 
@@ -184,12 +185,11 @@ formattedAirlineDataRec := RECORD
 END;
 
 //Transform grabs all data in new order of Record Layout and changes the carrier field to hold only the name (instead of the code)
-formattedAirlineDataRec finalFormatTransform(addCarrierRec L) := TRANSFORM
+EXPORT formattedAirlineDataRec finalFormatTransform(addCarrierRec L) := TRANSFORM
   SELF.carrier 	:= L.carrierName;
 	SELF					:= L;
 END;
 
-EXPORT airlineDataDiscovery := MODULE
   //Project data into 2 final datasets and export them for further use
 	EXPORT formattedAirlineData2019 	:= PROJECT(addCarrierName2019DS,finalFormatTransform(LEFT));
 	EXPORT formattedAirlineData2020		:= PROJECT(addCarrierName2020DS,finalFormatTransform(LEFT));

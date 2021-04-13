@@ -60,7 +60,7 @@ EXPORT GSECRec := RECORD
 END;
 
 
-EXPORT GsecDS2019 := DATASET('~GSEC::2019::raw::Thor', GSECRec, THOR);
+EXPORT GsecDS2019 := DATASET('~gsec::2019::raw::thor', GSECRec, THOR);
 
 EXPORT GsecDS2020 :=  DATASET('~GSEC::2020::raw::Thor', GSECRec, THOR);
 
