@@ -125,75 +125,75 @@ addCarrierName2019DS := JOIN(addCityNames2019DS, $.helperFiles.CarriersCodeDs,
 EXPORT airlineDataDiscovery := MODULE
   /*RecordLayout reorganizes fields to move location and carrier data to beginning for easier checking, also removes code
 versions of country/city/carrier fields and only preserves names*/
-EXPORT formattedAirlineDataRec := RECORD
-  STRING 			carrier;
-	STRING 			departCountryName;
-	STRING2     DepartStateProvCode; 
-	STRING 			departureCity;
-	STRING 			arrivalCountryName;
-	STRING2     ArriveStateProvCode;
-	STRING 			arrivalCity;
-	INTEGER2 		FlightNumber;
-	STRING1   	CodeShareFlag;
-	STRING3 		CodeShareCarrier; 
-	STRING1     ServiceType;
-	STRING8     EffectiveDate;
-	STRING8     DiscontinueDate;
-	UNSIGNED1   IsOpMon;
-	UNSIGNED1   IsOpTue;
-	UNSIGNED1   IsOpWed; 
-	UNSIGNED1   IsOpThu;
-	UNSIGNED1   IsOpFri;
-	UNSIGNED1   IsOpSat; 
-	UNSIGNED1   IsOpSun;
-	STRING3     DepartStationCode;
-	STRING10    DepartTimePassenger;
-	STRING10    DepartTimeAircraft;
-	STRING5     DepartUTCVariance;
-	STRING2     DepartTerminal;
-	STRING3     ArriveStationCode;
-	STRING10    ArriveTimePassenger;
-	STRING10    ArriveTimeAircraft;
-	STRING5     ArriveUTCVariance;
-	STRING2     ArriveTerminal;
-	STRING3     EquipmentSubCode; 
-	STRING3     EquipmentGroupCode;
-	VARSTRING4  CabinCategoryClasses;
-	VARSTRING40 BookingClasses; 
-	INTEGER1    ArriveDayIndicator;
-	INTEGER1    NumberOfIntermediateStops;
-	VARSTRING50 IntermediateStopStationCodes;
-	BOOLEAN     IsEquipmentChange;
-	VARSTRING60 EquipmentCodesAcrossSector;
-	VARSTRING80 MealCodes;
-	INTEGER2    FlightDurationLessLayover;
-	INTEGER2    FlightDistance;
-	INTEGER2    FlightDistanceThroughIndividualLegs;
-	INTEGER2    LayoverTime;
-	INTEGER2    IVI;
-	INTEGER2    FirstLegNumber;
-  VARSTRING50 InFlightServiceCodes;                   
-  BOOLEAN     IsCodeShare;                            
-  BOOLEAN     IsWetLease;                             
-  VARSTRING155 CodeShareInfo;                          
-  INTEGER     FirstClassSeats;
-  INTEGER     BusinessClassSeats;
-  INTEGER     PremiumEconomySeats;
-  INTEGER     EconomyClassSeats;
-  INTEGER     TotalSeats;
-  UNSIGNED    SectorizedId; 
-END;
+  EXPORT formattedAirlineDataRec := RECORD
+    STRING 			carrier;
+    STRING 			departCountryName;
+    STRING2     DepartStateProvCode; 
+    STRING 			departureCity;
+    STRING 			arrivalCountryName;
+    STRING2     ArriveStateProvCode;
+    STRING 			arrivalCity;
+    INTEGER2 		FlightNumber;
+    STRING1   	CodeShareFlag;
+    STRING3 		CodeShareCarrier; 
+    STRING1     ServiceType;
+    STRING8     EffectiveDate;
+    STRING8     DiscontinueDate;
+    UNSIGNED1   IsOpMon;
+    UNSIGNED1   IsOpTue;
+    UNSIGNED1   IsOpWed; 
+    UNSIGNED1   IsOpThu;
+    UNSIGNED1   IsOpFri;
+    UNSIGNED1   IsOpSat; 
+    UNSIGNED1   IsOpSun;
+    STRING3     DepartStationCode;
+    STRING10    DepartTimePassenger;
+    STRING10    DepartTimeAircraft;
+    STRING5     DepartUTCVariance;
+    STRING2     DepartTerminal;
+    STRING3     ArriveStationCode;
+    STRING10    ArriveTimePassenger;
+    STRING10    ArriveTimeAircraft;
+    STRING5     ArriveUTCVariance;
+    STRING2     ArriveTerminal;
+    STRING3     EquipmentSubCode; 
+    STRING3     EquipmentGroupCode;
+    VARSTRING4  CabinCategoryClasses;
+    VARSTRING40 BookingClasses; 
+    INTEGER1    ArriveDayIndicator;
+    INTEGER1    NumberOfIntermediateStops;
+    VARSTRING50 IntermediateStopStationCodes;
+    BOOLEAN     IsEquipmentChange;
+    VARSTRING60 EquipmentCodesAcrossSector;
+    VARSTRING80 MealCodes;
+    INTEGER2    FlightDurationLessLayover;
+    INTEGER2    FlightDistance;
+    INTEGER2    FlightDistanceThroughIndividualLegs;
+    INTEGER2    LayoverTime;
+    INTEGER2    IVI;
+    INTEGER2    FirstLegNumber;
+    VARSTRING50 InFlightServiceCodes;                   
+    BOOLEAN     IsCodeShare;                            
+    BOOLEAN     IsWetLease;                             
+    VARSTRING155 CodeShareInfo;                          
+    INTEGER     FirstClassSeats;
+    INTEGER     BusinessClassSeats;
+    INTEGER     PremiumEconomySeats;
+    INTEGER     EconomyClassSeats;
+    INTEGER     TotalSeats;
+    UNSIGNED    SectorizedId; 
+  END;
 
-//Transform grabs all data in new order of Record Layout and changes the carrier field to hold only the name (instead of the code)
-EXPORT formattedAirlineDataRec finalFormatTransform(addCarrierRec L) := TRANSFORM
-  SELF.carrier 	:= L.carrierName;
-	SELF					:= L;
-END;
+  //Transform grabs all data in new order of Record Layout and changes the carrier field to hold only the name (instead of the code)
+  EXPORT formattedAirlineDataRec finalFormatTransform(addCarrierRec L) := TRANSFORM
+    SELF.carrier 	:= L.carrierName;
+    SELF					:= L;
+  END;
 
-  //Project data into 2 final datasets and export them for further use
-	EXPORT formattedAirlineData2019 	:= PROJECT(addCarrierName2019DS,finalFormatTransform(LEFT));
-	EXPORT formattedAirlineData2020		:= PROJECT(addCarrierName2020DS,finalFormatTransform(LEFT));
+    //Project data into 2 final datasets and export them for further use
+    EXPORT formattedAirlineData2019 	:= PROJECT(addCarrierName2019DS,finalFormatTransform(LEFT));
+    EXPORT formattedAirlineData2020		:= PROJECT(addCarrierName2020DS,finalFormatTransform(LEFT));
 
-	//OUTPUT(SAMPLE(formattedAirlineData2019,5000),NAMED('formattedAirlineData2019'));
-	//OUTPUT(SAMPLE(formattedAirlineData2020,5000),NAMED('formattedAirlineData2020'));
+    //OUTPUT(SAMPLE(formattedAirlineData2019,5000),NAMED('formattedAirlineData2019'));
+    //OUTPUT(SAMPLE(formattedAirlineData2020,5000),NAMED('formattedAirlineData2020'));
 END;
