@@ -22,6 +22,10 @@ southWestDroppedByState		:= $.airRouteAnalysis.southWestDroppedByState;
 deltaDroppedByState				:= $.airRouteAnalysis.deltaDroppedByState;
 aaDroppedByState					:= $.airRouteAnalysis.aaDroppedByState;
 
+//ITL and CHN cout Datasets
+deltaItlChnRoutes					:= $.airRouteAnalysis.deltaItlChnRoutes;
+aaItlChnRoutes						:= $.airRouteAnalysis.aaItlChnRoutes;
+
 //OUTPUTS for visualization
 
 //Region outputs
@@ -36,14 +40,20 @@ OUTPUT(southWestDroppedByState,NAMED('southWestDroppedByState'));
 OUTPUT(deltaDroppedByState,NAMED('deltaDroppedByState'));
 OUTPUT(aaDroppedByState,NAMED('aaDroppedByState'));
 
+//ITL and CHN count outputs
+OUTPUT(deltaItlChnRoutes,NAMED('deltaItlAndChnRoutes'));
+OUTPUT(aaItlChnRoutes,NAMED('aaItlChnRoutes'));
+
 //Visualization
 
 //Region Pie Charts
-Visualizer.TwoD.Pie('FrontierVizByRegion',,'FrontierByRegion');
-Visualizer.TwoD.Pie('SouthWestVizByRegion',,'SouthWestByRegion');
 Visualizer.TwoD.Pie('DeltaByRegion',,'DeltaByRegion');
 Visualizer.TwoD.Pie('AmericanAirlinesVizByRegion',,'AmericanAirlinesByRegion');
 
 //State maps
 Visualizer.Choropleth.USStates('frontierDroppedByState',,'frontierDroppedByState');
 Visualizer.Choropleth.USStates('southWestDroppedByState',,'southWestDroppedByState');
+
+//ITL and CHN counts column graphs
+Visualizer.MultiD.Column('deltaItlAndChnRoutes',,'deltaItlAndChnRoutes');
+Visualizer.MultiD.Column('aaItlChnRoutes',,'aaItlChnRoutes');

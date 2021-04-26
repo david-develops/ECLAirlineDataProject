@@ -8,6 +8,8 @@ IMPORT airRouteDiscovery;
 	2. Second step is to count the routes dropped by each airline to each region, this dataset will be used for
 		 visualization directly 
 	3. Perform similar step for U.S. States since budget carriers don't offer many int'l routes
+
+	4. Create datasets for the international carriers counting routes to China and Italy
 */
 
 //First define the data we will need in easy to reference names
@@ -104,6 +106,18 @@ EXPORT airRouteAnalysis := MODULE
 																					arrvState,
                                           INTEGER droppedRoutesforState := COUNT(GROUP),
 																					},arrvState);
+	/*
+		STEP 4 - Count the number of records for Italy and China for Visualization
+	*/
+
+	EXPORT deltaItlChnRoutes				:= TABLE(deltaDropped(arrvCountry='Italy' OR arrvCountry='China'),{
+                                            arrvCountry,
+    																				INTEGER droppedRoutes	:= SUM(GROUP, IF(arrvCountry='Italy' OR arrvCountry='China',1,0)),
+  																					},arrvCountry);
+	EXPORT aaItlChnRoutes						:= TABLE(aaDropped(arrvCountry='Italy' OR arrvCountry='China'),{
+                                            arrvCountry,
+    																				INTEGER droppedRoutes	:= SUM(GROUP, IF(arrvCountry='Italy' OR arrvCountry='China',1,0)),
+  																					},arrvCountry);
 END;
 
 /*--OUTPUTS --
