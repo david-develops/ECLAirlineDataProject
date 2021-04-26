@@ -20,6 +20,7 @@ IMPORT airlineDataDiscovery;
 
 			-second join shows the inverse, flights not in 2019 dataset but in 2020 dataset (flights that are new in 2020 
 			for that airline)
+
 4. Final step is to create datasets with just carrier and location as well as Region classification
 	-will be used for visualization
 */
@@ -222,12 +223,14 @@ EXPORT airRouteDiscovery := MODULE
   EXPORT southWestRouteRegion	:= SORT(PROJECT(southWestDropped,regionTransform(LEFT)),arrvRegion,dprtRegion);
   EXPORT deltaRouteRegion 			:= SORT(PROJECT(deltaDropped,regionTransform(LEFT)),arrvRegion,dprtRegion);
   EXPORT aaRouteRegion					:= SORT(PROJECT(aaDropped,regionTransform(LEFT)),arrvRegion,dprtRegion);
+
 	
-EXPORT countriesServedByDelta := TABLE(deltaRoutes2019,{
+	//Check number of countries served by each international carrier for presentation data point
+	EXPORT countriesServedByDelta := TABLE(deltaRoutes2019,{
   																			arrvCountry,
 																				INTEGER numOfFLights	:= COUNT(GROUP),
 																			},arrvCountry);
-EXPORT countriesServedByAA := TABLE(aaRoutes2019,{
+	EXPORT countriesServedByAA := TABLE(aaRoutes2019,{
   																			arrvCountry,
 																				INTEGER numOfFlights	:= COUNT(GROUP),
 																			},arrvCountry);

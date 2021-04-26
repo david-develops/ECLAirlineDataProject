@@ -3,65 +3,47 @@ IMPORT airRouteDiscovery;
 IMPORT airRouteAnalysis;
 IMPORT Visualizer;
 
+/*
+	This file is a BWR for visualization
+	-all data manipulation happens in the other files
+*/
 
-dataset2019								:= $.airRouteDiscovery.dataset2019;
-dataset2020								:= $.airRouteDiscovery.dataset2020;
-countriesServedByDelta		:= $.airRouteDiscovery.countriesServedByDelta;
-countriesServedByAA				:= $.airRouteDiscovery.countriesServedByAA;
-frontierRoutes2019				:= $.airRouteDiscovery.frontierRoutes2019;
-southwestRoutes2019				:= $.airRouteDiscovery.southwestRoutes2019;
-deltaRoutes2019						:= $.airRouteDiscovery.deltaRoutes2019;
-aaRoutes2019							:= $.airRouteDiscovery.aaRoutes2019;
-frontierDropped						:= $.airRouteDiscovery.frontierDropped;
-frontierAdded							:= $.airRouteDiscovery.frontierAdded;
-frontierRouteRegion 			:= $.airRouteDiscovery.frontierRouteRegion;
-southWestDropped 					:= $.airRouteDiscovery.southWestDropped;
-southWestAdded						:= $.airRouteDiscovery.southWestAdded;
-southWestRouteRegion			:= $.airRouteDiscovery.southWestRouteRegion;
-deltaDropped							:= $.airRouteDiscovery.deltaDropped;
-deltaAdded								:= $.airRouteDiscovery.deltaAdded;
-deltaRouteRegion					:= $.airRouteDiscovery.deltaRouteRegion;
-aaDropped									:= $.airRouteDiscovery.aaDropped;
-aaAdded										:= $.airRouteDiscovery.aaAdded;
-aaRouteRegion							:= $.airRouteDiscovery.aaRouteRegion;
-budgetDropped							:= $.airRouteAnalysis.budgetDropped;
-majorDropped							:= $.airRouteAnalysis.majorDropped;
+//Label Datasets with easy to use names
+
+//Region Datasets
 frontierDroppedByRegion		:= $.airRouteAnalysis.frontierDroppedByRegion;
 southWestDroppedByRegion	:= $.airRouteAnalysis.southWestDroppedByRegion;
 deltaDroppedByRegion			:= $.airRouteAnalysis.deltaDroppedByRegion;
 aaDroppedByRegion					:= $.airRouteAnalysis.aaDroppedByRegion;
+
+//State Datasets
 frontierDroppedByState		:= $.airRouteAnalysis.frontierDroppedByState;
 southWestDroppedByState		:= $.airRouteAnalysis.southWestDroppedByState;
 deltaDroppedByState				:= $.airRouteAnalysis.deltaDroppedByState;
 aaDroppedByState					:= $.airRouteAnalysis.aaDroppedByState;
 
+//OUTPUTS for visualization
 
-OUTPUT(SAMPLE(dataset2019,1000),NAMED('formatted2019Dataset'));
-OUTPUT(SAMPLE(dataset2020,1000),NAMED('formatted2020Dataset'));
-OUTPUT(SORT(countriesServedByDelta,arrvCountry),NAMED('countriesServedByDelta'));
-OUTPUT(SORT(countriesServedByAA,arrvCountry),NAMED('countriesServedByAA'));
-OUTPUT(frontierRoutes2019,NAMED('frontierRoutes2019'));
-OUTPUT(southWestRoutes2019,NAMED('southWestRoutes2019'));
-OUTPUT(deltaRoutes2019,NAMED('deltaRoutes2019'));
-OUTPUT(aaRoutes2019,NAMED('aaRoutes2019'));
-OUTPUT(frontierDropped,NAMED('frontierDropped'));
-OUTPUT(frontierAdded,NAMED('frontierAdded'));
-OUTPUT(southWestAdded,NAMED('soutWestAdded'));
-OUTPUT(southWestDropped,NAMED('southWestDropped'));
-OUTPUT(deltaDropped,NAMED('deltaDropped'));
-OUTPUT(aaDropped,NAMED('aaDropped'));
+//Region outputs
 OUTPUT(frontierDroppedByRegion,NAMED('FrontierByRegion'));
 OUTPUT(southWestDroppedByRegion,NAMED('SouthWestByRegion'));
 OUTPUT(deltaDroppedByRegion,NAMED('DeltaByRegion'));
 OUTPUT(aaDroppedByRegion,NAMED('AmericanAirlinesByRegion'));
+
+//State outputs
 OUTPUT(frontierDroppedByState,NAMED('frontierDroppedByState'));
 OUTPUT(southWestDroppedByState,NAMED('southWestDroppedByState'));
 OUTPUT(deltaDroppedByState,NAMED('deltaDroppedByState'));
 OUTPUT(aaDroppedByState,NAMED('aaDroppedByState'));
 
+//Visualization
+
+//Region Pie Charts
 Visualizer.TwoD.Pie('FrontierVizByRegion',,'FrontierByRegion');
 Visualizer.TwoD.Pie('SouthWestVizByRegion',,'SouthWestByRegion');
 Visualizer.TwoD.Pie('DeltaByRegion',,'DeltaByRegion');
 Visualizer.TwoD.Pie('AmericanAirlinesVizByRegion',,'AmericanAirlinesByRegion');
+
+//State maps
 Visualizer.Choropleth.USStates('frontierDroppedByState',,'frontierDroppedByState');
 Visualizer.Choropleth.USStates('southWestDroppedByState',,'southWestDroppedByState');

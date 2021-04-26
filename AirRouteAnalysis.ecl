@@ -1,13 +1,20 @@
 IMPORT $;
 IMPORT airRouteDiscovery;
 /*
-	This file uses the files 
+	This file uses the files built in the previous steps to begin drawing conclusions about changes airlines have made
+	
+	1. First step is to combine budget carriers to see what routes they both dropped -then the same for major carriers
+		-also combined the resulting datasets to check for routes dropped by all 3 (they were none dropped by all 4)
+	2. Second step is to count the routes dropped by each airline to each region, this dataset will be used for
+		 visualization directly 
+	3. Perform similar step for U.S. States since budget carriers don't offer many int'l routes
 */
 
+//First define the data we will need in easy to reference names
+//reuse the record from previous steps
 routeRecord := $.airRouteDiscovery.routeRecord;
 	
-//import all of the datasets to be used in easier to type & read names
-
+//import all of the datasets to be used
 frontierDropped			:= $.airRouteDiscovery.frontierDropped;
 frontierAdded				:= $.airRouteDiscovery.frontierAdded;
 frontierRouteRegion := $.airRouteDiscovery.frontierRouteRegion;
@@ -22,11 +29,19 @@ aaAdded							:= $.airRouteDiscovery.aaAdded;
 aaRouteRegion				:= $.airRouteDiscovery.aaRouteRegion;
 
 EXPORT airRouteAnalysis := MODULE
-
+/*
+	STEP 1 - Check for routes dropped by multiple carriers
+		-one ds of budget routes dropped
+		-another for the major carriers
+		-check for any dropped by all 4
+*/
+  
+  //add field for second carrier for each route
 	EXPORT	carrierRouteRecord := RECORD
   	      	STRING CarrierTwo;
     	    	routeRecord;
       		END;
+	//create DS of routes dropped by both SouthWest and Frontier
 	EXPORT budgetDropped := JOIN(frontierDropped,southWestDropped,
                      LEFT.dprtCity = RIGHT.dprtCity AND LEFT.arrvCity = RIGHT.arrvCity,
                      TRANSFORM(carrierRouteRecord,
@@ -34,6 +49,7 @@ EXPORT airRouteAnalysis := MODULE
                               SELF 									:= RIGHT;
                               SELF.carrierTwo 			:= RIGHT.carrier;
                               ));
+	//create DS of routes dropped by both American and Delta
 	EXPORT majorDropped	:= JOIN(deltaDropped,aaDropped,
                      LEFT.dprtCity = RIGHT.dprtCity AND LEFT.arrvCity = RIGHT.arrvCity,
                      TRANSFORM(carrierRouteRecord,
@@ -41,12 +57,16 @@ EXPORT airRouteAnalysis := MODULE
                               SELF 									:= RIGHT;
                               SELF.carrierTwo 			:= RIGHT.carrier;
                               ));
+	//create DS of routes dropped by all 4 carriers (empty)
 	EXPORT bothDropped		:= JOIN(budgetDropped,majorDropped,
                      LEFT.dprtCity = RIGHT.dprtCity AND LEFT.arrvCity = RIGHT.arrvCity,
                      TRANSFORM(routeRecord,
                               SELF 									:= LEFT;
                               SELF 									:= RIGHT;
                               ));
+	/*
+		STEP 2 - Count the number of records for each region, will be used for visualization
+	*/
 	//Table for each ds calculates the number of records by region
 	EXPORT frontierDroppedByRegion 	:= TABLE(frontierRouteRegion,{
                                             arrvRegion,
@@ -64,7 +84,10 @@ EXPORT airRouteAnalysis := MODULE
                                             arrvRegion,
     																				INTEGER droppedRoutes	:= COUNT(GROUP),
   																					},arrvRegion);
-	//This set of tables organizes the data by state and number of flights to that state for map visualization
+	/*
+		STEP 3 - Count the number of records for each state, will be used for visualization
+	*/
+
 	EXPORT frontierDroppedByState		:= TABLE(frontierDropped,{
 																					arrvState,
                                           INTEGER droppedRoutesforState := COUNT(GROUP),
